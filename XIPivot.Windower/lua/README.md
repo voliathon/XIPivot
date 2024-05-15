@@ -15,7 +15,7 @@ The goals behind XIPivot are simple:
 
 ## Prerequisites
 
-Besides a recent Windower installation XIPivot requires the Microsoft Visual C++ Runtime 2015 which you can download from [Microsoft](https://aka.ms/vs/17/release/vc_redist.x86.exe)
+Besides a recent Windower installation XIPivot requires the Microsoft Visual C++ Runtime 2020 which you can download from [Microsoft](https://aka.ms/vs/17/release/vc_redist.x86.exe)
 
 ## Setup
 
@@ -24,6 +24,7 @@ Besides a recent Windower installation XIPivot requires the Microsoft Visual C++
 - 3) Edit `data/settings.xml` (see `settings.sample.xml`):
    - add the directory names from 2) for each overlay that should be enabled, separated by ','
    - *order matters* - overlays will be used in order, with the first hit for a file being used.
+- 4) add the line `lua load XIPivot` *as the first line of your init.txt* to ensure XIPivot is loades as soon as possible.
 
 ### Example - XI-View, XI-Vision and Ammelia's HD-Remake:
 
