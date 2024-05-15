@@ -28,7 +28,7 @@
 
 _addon.name = 'XIPivot'
 _addon.author = 'Heals'
-_addon.version = '0.4.7'
+_addon.version = '0.4.8'
 _addon.command = 'pivot'
 
 config = require('config')
@@ -88,10 +88,10 @@ windower.register_event('addon command', function(command, ...)
 
 	if command == 'help' or command == 'h' then
 		windower.add_to_chat(8, _addon.name .. ' v.' .. _addon.version)
-		windower.add_to_chat(8, '   add overlay_dir - Adds a path to be searched for DAT overlays')
-		windower.add_to_chat(8, '   remove overlay_dir - Removes a path from the DAT overlays')
-		windower.add_to_chat(8, '   status - Print status and diagnostic info')
-
+		windower.add_to_chat(8, '   add overlay_dir       - Adds a path to be searched for DAT overlays')
+		windower.add_to_chat(8, '   remove overlay_dir    - Removes a path from the DAT overlays')
+		windower.add_to_chat(8, '   status                - Print status and diagnostic info')
+		windower.add_to_chat(8, '   query <all| DAT-path> - Query all DAT redirects or a specific path')
 	elseif command == 'add' or command == 'a' then
 		if not args[1] then
 			error('Invalid syntax: //pivot add <relative overlay path>')
@@ -133,6 +133,27 @@ windower.register_event('addon command', function(command, ...)
 		windower.add_to_chat(127, '-  overlays :')
 		for prio, path in ipairs(stats['overlays']) do
 			windower.add_to_chat(127, '-      [' .. prio .. ']: ' .. path)
+		end
+
+	elseif command == 'query' or command == 'q' then
+		if not args[1] then
+			error('Invalid syntax: //pivot query <all|DAT path>')
+			return
+		end
+
+		local query = _XIPivot.query(args[1])
+		if args[1] == 'all' or args[1] == 'a' then
+			if query['status'] then
+				windower.add_to_chat(127, '- query report saved as "' .. query['query_result'] .. '"')
+			else
+				error('query: failed to write report - internal error')
+			end
+		else
+			if query['status'] then
+				windower.add_to_chat(127, '- ' .. args[1] .. ': ' .. query['query_result'])
+			else
+				windower.add_to_chat(127, '- ' .. args[1] .. ': no redirect, original file')
+			end
 		end
 	end
 end)

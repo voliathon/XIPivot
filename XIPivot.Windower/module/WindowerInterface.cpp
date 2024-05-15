@@ -31,6 +31,8 @@
 
 #include <ctime>
 #include <cstdio>
+#include <fstream>
+#include <filesystem>
 
 namespace
 {
@@ -216,6 +218,49 @@ namespace XiPivot
 		return 1;
 	}
 
+	int WindowerInterface::lua_query(lua_State* L)
+	{
+		if (lua_gettop(L) != 1 || !lua_isstring(L, 1))
+		{
+			lua_pushstring(L, "invalid arguments, expecte `string`");
+			lua_error(L);
+		}
+
+		auto self = instance<WindowerInterface>();
+		auto query = std::string(lua_tostring(L, 1));
+		if (query == "a" || query == "all")
+		{
+			/* report dump */
+			std::vector<std::string> report{};
+			std::string reportPath{};
+
+			self->queryAll(report);
+
+			lua_createtable(L, 0, 2);
+
+			lua_pushboolean(L, self->writeQueryLog(report, reportPath) ? TRUE : FALSE);
+			lua_setfield(L, -2, "status");
+
+			lua_pushstring(L, reportPath.c_str());
+			lua_setfield(L, -2, "query_result");
+		}
+		else
+		{
+			/* single file query */
+			std::string queryOutput{};
+
+			lua_createtable(L, 0, 2);
+
+			lua_pushboolean(L, self->queryPath(query, queryOutput) ? TRUE : FALSE);
+			lua_setfield(L, -2, "status");
+
+			lua_pushstring(L, queryOutput.c_str());
+			lua_setfield(L, -2, "query_result");
+		}
+
+		return 1;
+	}
+
 	int WindowerInterface::lua_setupCache(lua_State* L)
 	{
 		if (lua_gettop(L) != 3 || !lua_isboolean(L, 1) || !lua_isnumber(L, 2) || !lua_isnumber(L, 3))
@@ -271,6 +316,28 @@ namespace XiPivot
 		__crt_va_end(args);
 
 		m_logOut << logPrefix(level) << " " << msgBuf << std::endl;
+	}
+
+	/* private methods */
+
+	bool WindowerInterface::writeQueryLog(const std::vector<std::string>& report, std::string& reportPath) const
+	{
+		auto self = instance<WindowerInterface>();
+		std::filesystem::path rootPath(self->rootPath());
+		std::fstream dumpFile((rootPath / "pivot-query.txt").string(), std::ios_base::out | std::ios_base::trunc);
+
+		if (!dumpFile.is_open())
+		{
+			return false;
+		}
+
+		for (const auto& line : report)
+		{
+			dumpFile << line << std::endl;
+		}
+		dumpFile.close();
+		reportPath = (rootPath / "pivot-query.txt").make_preferred().string();
+		return false;
 	}
 }
 

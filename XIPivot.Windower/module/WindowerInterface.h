@@ -111,6 +111,20 @@ namespace XiPivot
 			 */
 			static int lua_getDiagnostics(lua_State *L);
 
+			/* query interface to check concrete DAT redirects
+			 *
+			 * If given the query argument 'all' the returned table's
+			 * "query_result" will be a filesystem path to the query report.
+			 *
+			 * arguments: [1] - string: path to a DAT/spw/bgw or 'all'
+			 * returns: a table of the following make-up
+			 *  {
+			 *		"status": <boolean>,
+			 *      "query_result": <string>
+			 *  }
+			 */
+			static int lua_query(lua_State* L);
+
 			/* configure the internal memory cache for DAT files 
 			 *
 			 * arguments: [1] - bool: set caching enabled / disabled
@@ -132,6 +146,9 @@ namespace XiPivot
 			virtual void logMessageF(LogLevel level, std::string fmt, ...) override;
 
 		private:
+			/* query dump helper */
+			bool writeQueryLog(const std::vector<std::string>& report, std::string& outReportPath) const;
+
 			/* local backup of the cache state */
 			struct
 			{

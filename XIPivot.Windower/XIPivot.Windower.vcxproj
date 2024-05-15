@@ -170,6 +170,7 @@ rmdir /S /Q "$(SolutionDir)build\$(Configuration)\Windower"</Command>
       <PreprocessorDefinitions>WIN32;NDEBUG;XIPIVOTWINDOWER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)XIPivot.Core\src;$(SolutionDir)3rdParty\SDKs\Windower\LUA;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
