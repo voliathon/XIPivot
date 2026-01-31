@@ -2,3 +2,5 @@ LIBRARY "pivot.dll"
 EXPORTS
 	expCreatePolPlugin @1
 	expGetInterfaceVersion @2
+	expDestroyPlugin @3
+

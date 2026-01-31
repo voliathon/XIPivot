@@ -38,4 +38,14 @@ extern "C" {
 	{
 		return new XiPivot::Pol::AshitaInterface(args);
 	}
+
+	void __stdcall expDestroyPlugin(void* instance)
+	{
+		IPolPlugin* polPlugin = static_cast<IPolPlugin*>(instance);
+		if (auto ashitaInterface = dynamic_cast<XiPivot::Pol::AshitaInterface*>(polPlugin))
+		{
+			ashitaInterface->Release();
+		}
+		delete instance;
+	}
 }
